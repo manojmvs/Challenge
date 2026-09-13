@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>20'Challenge - Card Game</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at top,#195a4a,#071d18 72%);color:#fff}
+button{font:inherit;cursor:pointer}
+.screen{display:none;min-height:100vh}.screen.active{display:flex}
+#startScreen,#resultScreen{align-items:center;justify-content:center;padding:20px}
+.panel{width:min(620px,95vw);padding:38px;border-radius:26px;text-align:center;background:#09251fcc;border:1px solid #47796d;box-shadow:0 20px 60px #0008}
+.logo{margin:0;color:#f5d477;font-size:clamp(40px,8vw,70px);letter-spacing:4px}
+.subtitle{color:#c9ddd8;margin:8px 0 28px}
+.player-options{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:18px 0 25px}
+.player-btn,.main-btn{border:0;border-radius:12px;padding:13px 22px;font-weight:900}
+.player-btn{background:#173d34;color:#d9e8e4;border:1px solid #52786d}
+.player-btn.active,.player-btn:hover{background:#e7bd52;color:#17231f}
+.main-btn{background:#e7bd52;color:#17231f;min-width:180px}
+.rules{margin-top:25px;padding:16px;text-align:left;line-height:1.55;background:#10352dcc;border-radius:14px;color:#d9e7e3}
+
+#gameScreen{flex-direction:column;max-width:1450px;width:100%;margin:auto;padding:12px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:12px;flex-wrap:wrap}
+.title{font-size:24px;font-weight:900;color:#f5d477}
+.turn{background:#e7bd52;color:#17231f;padding:9px 17px;border-radius:24px;font-weight:900}.timer{background:#102f27;border:2px solid #f5d477;color:#f5d477;padding:8px 14px;border-radius:24px;font-weight:900;min-width:75px;text-align:center}.timer.warning{color:#ffcf4d;border-color:#ffcf4d}.timer.danger{color:#ff6b5f;border-color:#ff6b5f;animation:pulse .65s infinite alternate}@keyframes pulse{to{transform:scale(1.05)}}
+.small-btn{background:#143a31;color:#fff;border:1px solid #4d756a;border-radius:9px;padding:9px 13px}
+
+.table{background:radial-gradient(circle,#21745f,#0b3d31 72%);border:7px solid #5b3820;border-radius:30px;padding:18px;box-shadow:inset 0 0 35px #0008,0 12px 35px #0008}
+.info{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-bottom:15px}
+.info-box{background:#082b23dd;border-radius:10px;padding:9px 13px;font-size:14px}
+.info-box b{color:#f5d477}
+#board{display:grid;grid-template-columns:repeat(5,minmax(60px,100px));justify-content:center;gap:11px;min-height:440px;align-content:center}
+
+.card{position:relative;aspect-ratio:2/2.85;border:0;background:transparent;padding:0;perspective:800px;user-select:none;-webkit-user-select:none}
+.card-inner{position:absolute;inset:0;transition:transform .5s;transform-style:preserve-3d}
+.card.flipped .card-inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 5px 9px #0007}
+.back{background:repeating-linear-gradient(45deg,#173e75 0 7px,#e5edf5 7px 9px,#173e75 9px 16px);border:4px solid #f7f0db}
+.back:after{content:"MR";width:58%;height:58%;border-radius:50%;background:#f7f0db;border:4px solid #173e75;color:#173e75;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:clamp(15px,2.4vw,25px);letter-spacing:1px}
+.front{transform:rotateY(180deg);background:#fffaf0;color:#18231f;border:3px solid #d2ba7b;flex-direction:column}
+.rank{font-size:clamp(26px,4vw,38px);font-weight:900}.value{font-size:11px;color:#8a6d32;margin-top:3px}
+.card.selected .face{box-shadow:0 0 0 3px #f4d05c,0 0 18px #f4d05c}
+.card.selected .card-inner{transform:rotateY(180deg) translateY(-7px)}
+.card.taken{opacity:0;pointer-events:none}
+
+.controls{text-align:center;padding:10px 0 5px}
+#message{min-height:25px;font-weight:700;color:#dcebe7}
+#takeBtn{margin-top:8px;border:0;border-radius:12px;padding:12px 27px;background:#e7bd52;color:#17231f;font-weight:900}
+#takeBtn:disabled{opacity:.45;cursor:not-allowed}
+
+.pockets{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:13px}
+.pocket{background:#082b23e8;border:1px solid #4a7469;border-radius:12px;padding:9px;min-height:72px}
+.pocket.current{border:2px solid #f2ca55}
+.pocket-head{display:flex;justify-content:space-between;font-weight:900}.score{color:#f5d477}
+.mini-cards{display:flex;gap:3px;flex-wrap:wrap;margin-top:6px}.mini{background:#fff7df;color:#25352e;border-radius:4px;padding:3px 6px;font-size:11px;font-weight:900}
+
+#winner{font-size:38px;font-weight:900;color:#f5d477;margin:12px}
+.result-row{display:flex;justify-content:space-between;background:#12392f;padding:11px 15px;border-radius:9px;margin:6px 0}
+
+.dialog-backdrop{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.dialog-backdrop.show{display:flex}.dialog{width:min(390px,92vw);background:#0b2922;border:2px solid #f5d477;border-radius:20px;padding:28px;text-align:center;box-shadow:0 20px 60px #0009}.dialog h2{color:#f5d477;margin:0 0 10px}.dialog p{color:#dcebe7;margin-bottom:20px}.dialog button{border:0;border-radius:11px;background:#e7bd52;color:#17231f;padding:11px 28px;font-weight:900}
+/* Portable / cross-device layout */
+html{width:100%;min-height:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{width:100%;min-width:280px;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+button{-webkit-appearance:none;appearance:none;touch-action:manipulation}
+.screen{width:100%;min-height:100dvh}
+#gameScreen{width:100%;max-width:1450px;padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
+.topbar{width:100%}
+.title{min-width:0}
+.table{width:100%;max-width:1400px;margin:0 auto}
+#board{width:100%;grid-template-columns:repeat(5,minmax(0,1fr));max-width:620px;margin:0 auto}
+.card{width:100%;min-width:0}
+.face{overflow:hidden}
+.pockets{width:100%}
+.small-btn,.main-btn,.player-btn,#takeBtn{min-height:44px}
+@media (orientation:landscape) and (max-height:600px){
+  #gameScreen{padding:6px}
+  .table{padding:9px}
+  #board{min-height:300px;max-width:480px;gap:6px}
+  .pocket{min-height:58px}
+  .info{margin-bottom:7px}
+  .controls{padding:5px 0}
+}
+@media (max-width:600px){
+  #startScreen,#resultScreen{padding:12px}
+  .panel{padding:24px 16px}
+  .logo{letter-spacing:2px}
+  .subtitle{font-size:15px}
+  .rules{font-size:14px}
+  .topbar{display:grid;grid-template-columns:1fr auto;grid-template-areas:"title buttons" "turn turn";align-items:center}
+  .title{grid-area:title}
+  .turn{grid-area:turn;text-align:center}
+  .timer{grid-area:buttons;min-width:64px}
+  #homeBtn,#restartBtn{padding:8px 10px}
+  .topbar{gap:6px}
+  #board{gap:5px;max-width:520px;min-height:0;padding:4px 0}
+  .front .rank{font-size:clamp(18px,7vw,30px)}
+  .back:after{border-width:3px}
+  .pockets{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:360px){
+  #gameScreen{padding:4px}
+  .table{padding:5px;border-width:4px}
+  #board{gap:4px}
+  .info-box{padding:7px 8px;font-size:12px}
+  .small-btn{padding:7px 8px;font-size:12px}
+  #takeBtn{width:100%;padding:11px 8px}
+}
+@media(max-width:800px){
+ #board{grid-template-columns:repeat(5,minmax(48px,76px));gap:7px;min-height:390px}
+ .table{padding:11px;border-width:5px}.pockets{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:480px){
+ #gameScreen{padding:6px}.title{font-size:18px}.turn{padding:8px 11px;font-size:12px}
+ #board{gap:5px;min-height:350px}.table{padding:7px;border-radius:22px}
+ .pocket{font-size:12px;padding:7px}.mini{padding:2px 5px}
+}
+</style>
+</head>
+<body>
+
+<section id="startScreen" class="screen active">
+  <div class="panel">
+    <h1 class="logo">20'CHALLENGE</h1>
+    <div class="subtitle">Pick carefully. Don't cross 20.</div>
+    <b>Number of Players</b>
+    <div class="player-options">
+      <button type="button" class="player-btn active" data-players="2">2 Players</button>
+      <button type="button" class="player-btn" data-players="3">3 Players</button>
+      <button type="button" class="player-btn" data-players="4">4 Players</button>
+    </div>
+    <button type="button" id="startBtn" class="main-btn">START GAME</button>
+    <div class="rules">
+      <b>How to play</b><br>
+      Tap a face-down card to flip it and reveal its rank/value. You may select
+      several cards during your turn. If your selected total is <b>20 or less</b>,
+      you may take those cards into your pocket. If the selected total becomes
+      <b>more than 20</b>, the selected cards immediately return to the table and
+      the turn automatically passes to the next player.
+      <br><br>
+      Card ranks used: <b>A, 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K</b>.
+      Scoring: A=1, J=11, Q=12, K=13.
+    </div>
+  </div>
+</section>
+
+<section id="gameScreen" class="screen">
+  <div class="topbar">
+    <div class="title">20'CHALLENGE</div>
+    <div id="turnLabel" class="turn">Player 1's Turn</div><div id="timer" class="timer">30s</div>
+    <button type="button" id="homeBtn" class="small-btn">Home</button><button type="button" id="restartBtn" class="small-btn">Restart</button>
+  </div>
+
+  <div class="table">
+    <div class="info">
+      <div class="info-box">Cards Left: <b id="remaining">25</b></div>
+      <div class="info-box">Selected: <b id="selectedCount">0</b></div>
+      <div class="info-box">Total: <b id="selectedTotal">0</b> / 20</div>
+    </div>
+
+    <div id="board" aria-label="25 playing cards"></div>
+
+    <div class="controls">
+      <div id="message" aria-live="polite">Tap a card to reveal it.</div>
+      <button type="button" id="takeBtn" disabled>TAKE SELECTED CARDS</button>
+    </div>
+
+    <div id="pockets" class="pockets"></div>
+  </div>
+</section>
+
+<section id="resultScreen" class="screen">
+  <div class="panel">
+    <div>GAME OVER</div>
+    <div id="winner"></div>
+    <div id="results"></div>
+    <br>
+    <button type="button" id="resultHomeBtn" class="main-btn">HOME</button>
+  </div>
+</section>
+
+<div id="dialogBackdrop" class="dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
+  <div class="dialog">
+    <h2 id="dialogTitle">SUM EXCEED</h2>
+    <p id="dialogText">Your selected cards have exceeded 20.</p>
+    <button type="button" id="dialogClose">OK — NEXT PLAYER</button>
+  </div>
+</div>
+
+<script>
+const RANKS=[
+  {rank:'A',value:1},
+  {rank:'2',value:2},
+  {rank:'3',value:3},
+  {rank:'4',value:4},
+  {rank:'5',value:5},
+  {rank:'6',value:6},
+  {rank:'7',value:7},
+  {rank:'8',value:8},
+  {rank:'9',value:9},
+  {rank:'10',value:10},
+  {rank:'J',value:11},
+  {rank:'Q',value:12},
+  {rank:'K',value:13}
+];
+
+const state={players:2,current:0,cards:[],selected:[],pockets:[],timeLeft:30,timerId:null,pendingTurn:false};
+
+const $=id=>document.getElementById(id);
+
+document.querySelectorAll('.player-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.player-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    state.players=Number(btn.dataset.players);
+  });
+});
+
+$('startBtn').addEventListener('click',startGame);
+$('resultHomeBtn').addEventListener('click',()=>{stopTimer();state.selected=[];state.pendingTurn=false;show('startScreen');});
+$('homeBtn').addEventListener('click',()=>{
+  stopTimer();
+  state.selected=[];
+  state.pendingTurn=false;
+  show('startScreen');
+});
+
+$('restartBtn').addEventListener('click',()=>{
+  if(confirm('Restart the current game?')) startGame();
+});
+$('takeBtn').addEventListener('click',takeSelected);
+
+function shuffle(array){
+  for(let i=array.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [array[i],array[j]]=[array[j],array[i]];
+  }
+  return array;
+}
+
+function stopTimer(){
+  if(state.timerId){clearInterval(state.timerId);state.timerId=null}
+}
+
+function startTimer(){
+  stopTimer();
+  state.timeLeft=10;
+  updateTimer();
+  state.timerId=setInterval(()=>{
+    state.timeLeft--;
+    updateTimer();
+    if(state.timeLeft<=0){
+      stopTimer();
+      state.selected=[];
+      showTimeUp();
+    }
+  },1000);
+}
+
+function updateTimer(){
+  const t=$('timer');
+  t.textContent=state.timeLeft+'s';
+  t.classList.toggle('warning',state.timeLeft<=10 && state.timeLeft>5);
+  t.classList.toggle('danger',state.timeLeft<=5);
+}
+
+function showDialog(title,text){
+  $('dialogTitle').textContent=title;
+  $('dialogText').textContent=text;
+  $('dialogBackdrop').classList.add('show');
+}
+
+function showTimeUp(){
+  state.pendingTurn=true;
+  showDialog('TIME UP!','10 seconds are over. Your turn has ended.');
+}
+
+function showSumExceed(){
+  state.pendingTurn=true;
+  showDialog('SUM EXCEED','Your selected cards have exceeded 20.');
+}
+
+$('dialogClose').addEventListener('click',()=>{
+  $('dialogBackdrop').classList.remove('show');
+  if(state.pendingTurn){
+    state.pendingTurn=false;
+    state.selected=[];
+    state.current=(state.current+1)%state.players;
+    render();
+    startTimer();
+  }
+});
+
+function startGame(){
+  // Build 25 random cards from the requested rank set.
+  state.cards=shuffle(Array.from({length:25},(_,i)=>{
+    const r=RANKS[Math.floor(Math.random()*RANKS.length)];
+    return {id:i,rank:r.rank,value:r.value,taken:false};
+  }));
+  stopTimer();
+  state.current=0;
+  state.selected=[];
+  state.pendingTurn=false;
+  state.pockets=Array.from({length:state.players},()=>[]);
+  show('gameScreen');
+  render();
+  startTimer();
+}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id).classList.add('active');
+}
+
+function selectedTotal(){
+  return state.selected.reduce((sum,id)=>{
+    const card=state.cards.find(c=>c.id===id);
+    return sum+(card?card.value:0);
+  },0);
+}
+
+function render(){
+  renderBoard();
+  renderPockets();
+
+  $('remaining').textContent=state.cards.filter(c=>!c.taken).length;
+  $('selectedCount').textContent=state.selected.length;
+  $('selectedTotal').textContent=selectedTotal();
+  $('turnLabel').textContent=`Player ${state.current+1}'s Turn`;
+
+  const total=selectedTotal();
+  $('takeBtn').disabled=state.selected.length===0 || total>20;
+
+  if(total>20){
+    $('message').textContent='Over 20! Cards return and turn passes automatically...';
+  }else if(state.selected.length){
+    $('message').textContent='Selection is within 20. Take the cards or select another card.';
+  }else{
+    $('message').textContent='Tap a card to flip it and reveal its value.';
+  }
+}
+
+function renderBoard(){
+  const board=$('board');
+  board.innerHTML='';
+
+  state.cards.filter(c=>!c.taken).forEach(card=>{
+    const el=document.createElement('button');
+    el.type='button';
+    el.className='card'+(state.selected.includes(card.id)?' selected':'');
+    el.setAttribute('aria-label',`Card ${card.rank}, value ${card.value}`);
+    el.innerHTML=`
+      <div class="card-inner">
+        <div class="face back"></div>
+        <div class="face front">
+          <div class="rank">${card.rank}</div>
+          <div class="value">${card.value} POINT${card.value===1?'':'S'}</div>
+        </div>
+      </div>`;
+    el.addEventListener('click',()=>selectCard(card.id));
+    board.appendChild(el);
+  });
+}
+
+function selectCard(id){
+  if(state.pendingTurn)return;
+
+  if(state.selected.includes(id)){
+    state.selected=state.selected.filter(x=>x!==id);
+    render();
+    return;
+  }
+
+  state.selected.push(id);
+  render();
+
+  if(selectedTotal()>20){
+    stopTimer();
+    showSumExceed();
+  }
+}
+
+function takeSelected(){
+  const total=selectedTotal();
+  if(state.pendingTurn || !state.selected.length || total>20)return;
+
+  state.selected.forEach(id=>{
+    const card=state.cards.find(c=>c.id===id);
+    if(card){
+      card.taken=true;
+      state.pockets[state.current].push(card);
+    }
+  });
+
+  state.selected=[];
+
+  if(state.cards.every(c=>c.taken)){
+    endGame();
+    return;
+  }
+
+  state.current=(state.current+1)%state.players;
+  render();
+  startTimer();
+}
+
+function renderPockets(){
+  const container=$('pockets');
+  container.innerHTML='';
+
+  state.pockets.forEach((cards,i)=>{
+    const score=cards.reduce((sum,c)=>sum+c.value,0);
+    const box=document.createElement('div');
+    box.className='pocket'+(i===state.current?' current':'');
+    box.innerHTML=`
+      <div class="pocket-head">
+        <span>Player ${i+1}</span>
+        <span class="score">${score} pts</span>
+      </div>
+      <div class="mini-cards">
+        ${cards.map(c=>`<span class="mini">${c.rank}</span>`).join('')}
+      </div>`;
+    container.appendChild(box);
+  });
+}
+
+function endGame(){
+  stopTimer();
+  const scores=state.pockets.map(cards=>cards.reduce((sum,c)=>sum+c.value,0));
+  const high=Math.max(...scores);
+  const winners=scores.map((score,i)=>score===high?i+1:null).filter(Boolean);
+
+  $('winner').textContent=winners.length===1
+    ? `🏆 PLAYER ${winners[0]} WINS!`
+    : `DRAW — PLAYERS ${winners.join(' & ')}`;
+
+  $('results').innerHTML=scores.map((score,i)=>
+    `<div class="result-row"><span>Player ${i+1}</span><b>${score} points</b></div>`
+  ).join('');
+
+  show('resultScreen');
+}
+</script>
+</body>
+</html>
