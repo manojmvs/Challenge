@@ -36,9 +36,11 @@ button{font:inherit;cursor:pointer}
 .card-inner{position:absolute;inset:0;transition:transform .5s;transform-style:preserve-3d}
 .card.flipped .card-inner{transform:rotateY(180deg)}
 .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 5px 9px #0007}
-.back{background:repeating-linear-gradient(45deg,#173e75 0 7px,#e5edf5 7px 9px,#173e75 9px 16px);border:4px solid #f7f0db}
-.back:after{content:"MR";width:58%;height:58%;border-radius:50%;background:#f7f0db;border:4px solid #173e75;color:#173e75;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:clamp(15px,2.4vw,25px);letter-spacing:1px}
-.front{transform:rotateY(180deg);background:#fffaf0;color:#18231f;border:3px solid #d2ba7b;flex-direction:column}
+.back{background-color:#e64c79;background-image:radial-gradient(ellipse at 50% 74%,#ffb7cb 0 8%,transparent 9%),radial-gradient(circle at 31% 47%,#ffb7cb 0 5%,transparent 6%),radial-gradient(circle at 48% 39%,#ffb7cb 0 5%,transparent 6%),radial-gradient(circle at 65% 47%,#ffb7cb 0 5%,transparent 6%),radial-gradient(circle at 50% 24%,#ffb7cb 0 5%,transparent 6%);background-size:72px 72px;background-position:0 0;border:4px solid #fff0f5}
+.back-mascot{width:62%;height:62%;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#f7f0db;border:4px solid #173e75;font-size:clamp(25px,4vw,48px);line-height:1;box-shadow:0 3px 6px #0003}
+.front{transform:rotateY(180deg);background:var(--card-face,#fffaf0);color:var(--card-ink,#18231f);border:3px solid var(--card-border,#d2ba7b);flex-direction:column;gap:2px;padding:4px}
+.cartoon{font-size:clamp(24px,5vw,46px);line-height:1.1;filter:drop-shadow(0 2px 1px #0002)}
+.theme-label{font-size:8px;letter-spacing:.6px;text-transform:uppercase;color:var(--card-ink,#8a6d32);font-weight:900}.front .value{color:var(--card-ink,#8a6d32)}
 .rank{font-size:clamp(26px,4vw,38px);font-weight:900}.value{font-size:11px;color:#8a6d32;margin-top:3px}
 .card.selected .face{box-shadow:0 0 0 3px #f4d05c,0 0 18px #f4d05c}
 .card.selected .card-inner{transform:rotateY(180deg) translateY(-7px)}
@@ -115,6 +117,293 @@ button{-webkit-appearance:none;appearance:none;touch-action:manipulation}
  #board{gap:5px;min-height:350px}.table{padding:7px;border-radius:22px}
  .pocket{font-size:12px;padding:7px}.mini{padding:2px 5px}
 }
+
+/* Cartoon table UI refresh */
+body{background:radial-gradient(ellipse at 50% 0%,#16785e 0%,#07513f 42%,#032d25 100%);color:#f7fff9}
+#gameScreen{max-width:1500px;padding:14px}
+.topbar{background:linear-gradient(135deg,#063f34ee,#052d27ee);border:1px solid #27846d;border-radius:20px;padding:12px 16px;margin-bottom:14px;box-shadow:0 8px 20px #001b1680}
+.title{font-size:clamp(22px,3vw,34px);letter-spacing:1px;color:#ffe17a;text-shadow:0 2px 0 #7b431d}
+.title:after{content:"PICK SMART  •  STAY UNDER 20";display:block;font-size:10px;letter-spacing:1.4px;color:#d7f0e4;text-shadow:none;margin-top:2px}
+.turn{background:#ffe17a;color:#17382e;border:2px solid #fff0b1;box-shadow:0 3px 0 #9b6b25}
+.timer{background:#082b25;border:3px solid #e9bd3f;color:#ffe17a;box-shadow:0 0 0 3px #174f40}
+.small-btn{background:#0a493b;border:1px solid #53a58a;border-radius:12px;font-weight:800}
+.table{background:linear-gradient(135deg,#8c542d,#4b2c19 14%,#7a4827 50%,#3b2418);border:8px solid #a86c38;border-radius:34px;padding:18px;box-shadow:inset 0 0 0 3px #d59a5e,inset 0 0 30px #160d08,0 14px 32px #001a14aa}
+.info-box{background:#063c30ed;border:1px solid #24745f;border-radius:12px;padding:10px 14px;font-weight:700}
+#board{max-width:760px;min-height:0;gap:10px;padding:8px 0}
+.card{filter:drop-shadow(0 4px 3px #00150f55);transition:transform .18s,filter .18s}
+.card:not(.taken):hover{transform:translateY(-3px);filter:drop-shadow(0 7px 5px #00150f88)}
+.card-inner{transition:transform .48s cubic-bezier(.2,.75,.25,1)}
+.face{border-radius:12px}
+.back{border:4px solid #fff0f5;box-shadow:inset 0 0 0 2px #a82d53,inset 0 0 18px #7d2145}
+.back-mascot{background:#fff8e9;border:3px solid #a82d53;box-shadow:0 3px 0 #9d2d50;font-size:clamp(24px,3.5vw,42px)}
+.front{border:3px solid var(--card-border,#d2ba7b);box-shadow:inset 0 0 0 2px #ffffffa8,0 5px 9px #0005}
+.cartoon{font-size:clamp(22px,3.6vw,42px);margin:2px 0}
+.rank{font-size:clamp(23px,3vw,34px);line-height:1}
+.value{font-size:10px;font-weight:900;letter-spacing:.4px}
+.card.selected .face{box-shadow:0 0 0 3px #ffe16c,0 0 18px #ffe16c}
+.controls{padding:14px 0 7px}
+#message{color:#e2f5eb}
+#takeBtn{background:linear-gradient(#ffe68c,#e6b83f);border:2px solid #fff0b1;box-shadow:0 4px 0 #8d6326;border-radius:14px}
+#takeBtn:disabled{background:#63736e;color:#d5dfda;border-color:#87968f;box-shadow:0 4px 0 #334b43}
+.pocket{background:linear-gradient(145deg,#064638,#032e26);border:1px solid #29836a;border-radius:16px;box-shadow:0 4px 12px #001c1555}
+.pocket.current{border:2px solid #ffe16c;box-shadow:0 0 0 2px #a4772a,0 5px 14px #001c1555}
+.mini{background:#fff1c7;border:1px solid #d9b969;color:#263a30;border-radius:5px}
+.dialog{background:linear-gradient(145deg,#0b4437,#062b24);border-color:#ffe16c}
+@media(max-width:800px){#board{gap:7px}.table{padding:12px;border-width:6px}}
+@media(max-width:600px){#gameScreen{padding:7px}.topbar{padding:10px;border-radius:14px}.table{border-radius:22px;padding:8px;border-width:5px}#board{gap:5px}.cartoon{font-size:clamp(18px,5vw,30px)}.theme-label{font-size:6px}.value{font-size:8px}.back-mascot{border-width:2px}}
+
+
+/* Laptop fit: keep the complete 5×5 board, action button and score pockets
+   visible together on common laptop viewport heights. */
+@media (min-width:801px) and (max-height:950px){
+  #gameScreen{padding:6px 10px;gap:0}
+  .topbar{padding:7px 12px;margin-bottom:7px;gap:7px}
+  .title{font-size:23px}
+  .title:after{font-size:8px}
+  .turn,.timer{padding:6px 11px}
+  .table{padding:9px 12px;border-width:6px;border-radius:24px}
+  .info{margin-bottom:5px;gap:6px}
+  .info-box{padding:6px 10px;font-size:12px}
+  #board{width:min(100%,340px);max-width:340px;min-height:0;gap:5px;padding:2px 0}
+  .card{aspect-ratio:2/2.35}
+  .front{padding:2px;gap:1px}
+  .cartoon{font-size:clamp(19px,2.2vw,29px);margin:0}
+  .rank{font-size:clamp(19px,2vw,25px)}
+  .value{font-size:8px;margin-top:0}
+  .theme-label{font-size:6px;letter-spacing:0}
+  .controls{padding:5px 0 2px}
+  #message{min-height:18px;font-size:12px}
+  #takeBtn{margin-top:3px;padding:8px 18px;min-height:36px;font-size:13px}
+  .pockets{margin-top:5px;gap:6px}
+  .pocket{min-height:48px;padding:5px 7px}
+  .pocket-head{font-size:12px}
+  .mini-cards{margin-top:3px;gap:2px}
+  .mini{padding:2px 4px;font-size:9px}
+}
+@media (min-width:801px) and (max-height:760px){
+  .topbar{padding:5px 10px;margin-bottom:5px}
+  .table{padding:6px 10px}
+  #board{width:min(100%,300px);max-width:300px;gap:4px}
+  .card{aspect-ratio:2/2.2}
+  .controls{padding:3px 0 1px}
+  #takeBtn{min-height:32px;padding:6px 14px}
+  .pocket{min-height:42px;padding:4px 6px}
+}
+
+
+/* Portrait-first gameplay layout and compact HUD */
+#gameScreen{width:100%;max-width:760px;margin:0 auto;padding:10px;flex-direction:column;align-items:stretch;gap:8px}
+.topbar{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand actions" "details details" "status status";gap:8px;padding:11px 12px;margin:0;border-radius:16px}
+.title{grid-area:brand;font-size:clamp(20px,4vw,29px);align-self:center}
+.title:after{font-size:8px;letter-spacing:1px}
+.hud-details{grid-area:details;background:#062f28;border:1px solid #287b66;border-radius:9px;padding:7px 10px;text-align:center;color:#d7f0e4;font-size:11px;font-weight:900;letter-spacing:1px}
+.hud-details span{color:#f5d477;padding:0 6px}
+.hud-status{grid-area:status;display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap}
+.hud-actions{grid-area:actions;display:flex;gap:7px;align-items:center}
+.icon-btn{width:42px;height:42px;padding:9px;display:inline-flex;align-items:center;justify-content:center}
+.icon-btn svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.table{width:100%;padding:10px;border-radius:22px;border-width:5px}
+.info{margin:0 0 8px;gap:6px}
+.info-box{padding:7px 9px;font-size:12px}
+#board{width:100%;max-width:560px;min-height:0;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;padding:3px 0;margin:0 auto}
+.card{aspect-ratio:2/2.55}
+.front{padding:3px;gap:1px}
+.cartoon{font-size:clamp(20px,5vw,39px)}
+.rank{font-size:clamp(20px,4vw,31px)}
+.value{font-size:9px}
+.theme-label{font-size:6px}
+.controls{padding:8px 0 4px}
+#message{font-size:13px;min-height:20px}
+#takeBtn{min-height:42px;padding:10px 20px}
+.pockets{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:8px}
+.pocket{min-width:0;padding:8px;min-height:60px}
+.pocket-head{font-size:12px}
+.mini{font-size:10px;padding:2px 4px}
+@media(min-width:600px){
+  #gameScreen{padding:14px}
+  .topbar{grid-template-columns:1fr auto;grid-template-areas:"brand actions" "details details" "status status"}
+  #board{max-width:620px;gap:9px}
+  .card{aspect-ratio:2/2.6}
+}
+@media(max-width:380px){
+  #gameScreen{padding:5px}
+  .table{padding:6px;border-radius:16px}
+  #board{gap:4px}
+  .info-box{font-size:10px;padding:6px}
+  .pocket{padding:6px}
+  .pocket-head{font-size:11px}
+  #takeBtn{width:100%}
+}
+
+
+/* Right-side HUD layout: card board remains the main focus */
+#gameScreen{width:100%;max-width:1120px;margin:0 auto;padding:10px;display:flex;flex-direction:column;gap:9px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:8px 12px;margin:0}
+.table{display:grid;grid-template-columns:minmax(0,1fr) minmax(190px,245px);grid-template-areas:"board hud" "pockets pockets";align-items:start;gap:12px;padding:12px;border-radius:22px;border-width:6px}
+#board{grid-area:board;width:100%;max-width:700px;min-height:0;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(5px,1vw,10px);padding:2px;margin:0 auto}
+.card{aspect-ratio:2/2.55;min-width:0}
+.game-hud{grid-area:hud;display:flex;flex-direction:column;align-self:stretch;gap:10px;min-width:0;background:#06392fdd;border:1px solid #31836b;border-radius:15px;padding:11px}
+.hud-status{display:flex;flex-direction:column;align-items:stretch;gap:7px}
+.turn{text-align:center;padding:10px 6px;border-radius:11px}
+.timer{align-self:center;min-width:80px}
+.hud-counts{display:grid;grid-template-columns:1fr;gap:6px}
+.hud-counts .info-box{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;font-size:12px}
+.hud-counts .info-box b{margin-left:auto;font-size:16px}
+.hud-counts .info-box span{margin-left:3px}
+.controls{padding:0;display:flex;flex-direction:column;gap:8px}
+#message{font-size:12px;line-height:1.35;min-height:34px}
+#takeBtn{width:100%;min-height:42px;padding:9px 8px;font-size:12px}
+.hud-actions{display:flex;justify-content:center;gap:10px;margin-top:auto;padding-top:4px}
+.icon-btn{width:46px;height:46px}
+.pockets{grid-area:pockets;display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px;margin:0}
+.pocket{min-width:0}
+@media(max-width:650px){
+  .table{grid-template-columns:minmax(0,1fr);grid-template-areas:"hud" "board" "pockets";gap:9px;padding:8px}
+  .game-hud{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:9px}
+  .hud-status{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:space-between}
+  .turn{flex:1}
+  .hud-counts{grid-template-columns:repeat(3,minmax(0,1fr));grid-column:1/-1}
+  .hud-counts .info-box{flex-direction:column;gap:2px;text-align:center;padding:6px 3px;font-size:10px}
+  .hud-counts .info-box b{margin:0;font-size:15px}
+  .controls{grid-column:1/-1}
+  .hud-actions{grid-column:1/-1;margin:0}
+  #board{max-width:560px;gap:5px}
+  .card{aspect-ratio:2/2.5}
+}
+
+
+/* Refined gameplay composition: compact board + player score list in right HUD */
+#gameScreen{width:100%;max-width:1160px;margin:0 auto;padding:8px;display:flex;flex-direction:column;gap:8px}
+.topbar{display:flex;align-items:center;justify-content:flex-start;padding:7px 12px;margin:0}
+.table{display:grid;grid-template-columns:minmax(0,1fr) 225px;grid-template-areas:"board hud";align-items:start;gap:10px;padding:10px;border-radius:22px;border-width:6px}
+#board{grid-area:board;width:100%;max-width:650px;min-height:0;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(4px,.75vw,8px);padding:2px;margin:0 auto}
+.card{aspect-ratio:2/2.45;min-width:0}
+.game-hud{grid-area:hud;display:flex;flex-direction:column;align-self:stretch;gap:8px;min-width:0;background:#06392fdd;border:1px solid #31836b;border-radius:15px;padding:9px}
+.hud-status{display:flex;flex-direction:column;align-items:stretch;gap:6px}
+.turn{text-align:center;padding:8px 5px;border-radius:10px;font-size:13px}
+.timer{align-self:center;min-width:75px;padding:6px 10px}
+.hud-counts{display:grid;grid-template-columns:1fr;gap:5px}
+.hud-counts .info-box{display:flex;justify-content:space-between;align-items:center;padding:7px 8px;font-size:11px}
+.hud-counts .info-box b{margin-left:auto;font-size:15px}
+.controls{padding:0;display:flex;flex-direction:column;gap:6px}
+#message{font-size:11px;line-height:1.3;min-height:28px}
+#takeBtn{width:100%;min-height:38px;padding:7px 5px;font-size:11px}
+.player-panel{border-top:1px solid #4d9c83;padding-top:7px;display:flex;flex-direction:column;gap:6px}
+.player-panel-title{text-align:center;color:#bfe9dc;font-weight:900;font-size:12px;letter-spacing:1.2px}
+.pockets{display:flex;flex-direction:column;gap:5px;margin:0;min-width:0}
+.pocket{min-width:0;padding:6px 7px;min-height:44px;border-radius:10px}
+.pocket-head{font-size:11px;gap:4px}
+.mini-cards{gap:2px;margin-top:3px}
+.mini{font-size:9px;padding:2px 3px}
+.hud-actions{display:flex;justify-content:center;gap:9px;margin-top:auto;padding-top:6px;border-top:1px solid #4d9c83}
+.icon-btn{width:42px;height:42px}
+@media(max-width:700px){
+  .table{grid-template-columns:minmax(0,1fr);grid-template-areas:"hud" "board";gap:8px;padding:7px}
+  .game-hud{display:flex;gap:7px;padding:8px}
+  .hud-status{flex-direction:row;align-items:center;justify-content:space-between}
+  .turn{flex:1}
+  .hud-counts{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .hud-counts .info-box{flex-direction:column;gap:2px;text-align:center;padding:5px 2px;font-size:10px}
+  .hud-counts .info-box b{margin:0;font-size:14px}
+  .player-panel{order:5}
+  .pockets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hud-actions{order:6;margin:0}
+  #board{max-width:560px;gap:4px}
+  .card{aspect-ratio:2/2.45}
+}
+@media(max-width:380px){
+  #gameScreen{padding:4px}
+  .table{padding:5px}
+  #board{gap:3px}
+  .pocket{padding:5px}
+}
+
+
+/* Matching forest-cartoon home screen and clear results */
+#startScreen .panel{position:relative;overflow:hidden;background:linear-gradient(155deg,#0c5947f5,#06362ef7 68%,#082820f5);border:3px solid #d7a45b;box-shadow:inset 0 0 0 5px #ffffff12,0 12px 0 #4a2d19,0 22px 45px #001b15aa;padding:clamp(22px,4vw,42px)}
+#startScreen .panel:before{content:"🐻   🐧   🦊";display:block;font-size:clamp(28px,5vw,44px);letter-spacing:10px;margin-bottom:10px;filter:drop-shadow(0 3px 1px #001b15)}
+#startScreen .logo{color:#ffe17a;font-size:clamp(38px,7vw,66px);letter-spacing:1px;text-shadow:0 4px 0 #6b3a19,2px 6px 0 #351e12}
+#startScreen .subtitle{font-weight:800;color:#d7f0e4;margin:9px 0 24px}
+#startScreen .player-options{gap:9px;margin:16px 0 23px}
+#startScreen .player-btn{background:linear-gradient(#0c5c49,#084131);border:2px solid #58a98b;color:#eafff5;box-shadow:0 4px 0 #032a22;transition:transform .15s,background .15s}
+#startScreen .player-btn.active{background:linear-gradient(#ffe68c,#e6b83f);border-color:#fff0b1;color:#24372e;box-shadow:0 4px 0 #8d6326}
+#startScreen .main-btn{background:linear-gradient(#ffe68c,#e6b83f);border:2px solid #fff0b1;color:#24372e;box-shadow:0 5px 0 #8d6326;font-size:16px;letter-spacing:.7px;padding:14px 28px}
+#startScreen .rules{background:#032d26b8;border:1px solid #39846d;border-radius:16px;color:#d9eee6;font-size:13px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 12px;margin:0}
+.top-actions{display:flex;gap:8px;align-items:center}
+.top-actions .icon-btn{width:42px;height:42px}
+#resultScreen .panel{background:linear-gradient(155deg,#0c5947,#06362e);border:3px solid #d7a45b;box-shadow:inset 0 0 0 4px #ffffff12,0 10px 0 #4a2d19;padding:clamp(22px,4vw,38px)}
+#resultScreen .panel>div:first-child{font-size:clamp(28px,5vw,42px);font-weight:1000;color:#ffe17a;text-shadow:0 3px 0 #6b3a19}
+#winner{margin:18px 0 14px;padding:15px 10px;border-radius:14px;background:#ffe17a;color:#23372d;border:2px solid #fff0b1;font-size:clamp(20px,4vw,30px);font-weight:1000}
+#results{display:flex;flex-direction:column;gap:7px;margin:12px 0 20px}
+.result-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 13px;background:#064334;border:1px solid #34866c;border-radius:10px;color:#eafff5}
+.result-row b{color:#ffe17a}
+@media(max-width:700px){.topbar{padding:5px 7px}.top-actions .icon-btn{width:38px;height:38px}}
+
+
+/* Game-over screen is a viewport overlay, not a section below gameplay */
+#resultScreen{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  width:100%;
+  height:100%;
+  min-height:100vh;
+  min-height:100dvh;
+  box-sizing:border-box;
+  overflow-y:auto;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:radial-gradient(ellipse at 50% 0%,#16785e 0%,#07513f 42%,#032d25 100%);
+}
+#resultScreen .panel{margin:auto;max-height:calc(100% - 24px);overflow-y:auto}
+
+
+/* Match the Game Over Home button to the raised gold gameplay buttons */
+#resultHomeBtn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:180px;
+  min-height:46px;
+  padding:12px 26px;
+  border:2px solid #fff0b1;
+  border-radius:14px;
+  background:linear-gradient(#ffe68c,#e6b83f);
+  color:#24372e;
+  font-weight:1000;
+  letter-spacing:.8px;
+  box-shadow:0 5px 0 #8d6326, inset 0 1px 0 #fff8d6;
+  cursor:pointer;
+  transition:transform .12s ease,box-shadow .12s ease,filter .12s ease;
+}
+#resultHomeBtn:hover{filter:brightness(1.05);transform:translateY(-1px);box-shadow:0 6px 0 #8d6326,inset 0 1px 0 #fff8d6}
+#resultHomeBtn:active{transform:translateY(3px);box-shadow:0 2px 0 #8d6326}
+#resultHomeBtn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+
+
+/* Tactile press feedback for all interactive game buttons */
+button{
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+  transition:transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+button:active:not(:disabled){
+  transform:translateY(3px) scale(.98);
+  box-shadow:0 1px 0 #493018,inset 0 2px 4px #0002 !important;
+  filter:brightness(.94);
+}
+button:focus-visible{
+  outline:3px solid #fff0a8;
+  outline-offset:3px;
+}
+button:disabled{cursor:not-allowed}
+@media(prefers-reduced-motion:reduce){
+  button{transition:none}
+}
+
 </style>
 </head>
 <body>
@@ -147,25 +436,31 @@ button{-webkit-appearance:none;appearance:none;touch-action:manipulation}
 <section id="gameScreen" class="screen">
   <div class="topbar">
     <div class="title">20'CHALLENGE</div>
-    <div id="turnLabel" class="turn">Player 1's Turn</div><div id="timer" class="timer">30s</div>
-    <button type="button" id="homeBtn" class="small-btn">Home</button><button type="button" id="restartBtn" class="small-btn">Restart</button>
+    <div class="top-actions">
+      <button type="button" id="homeBtn" class="small-btn icon-btn" aria-label="Home" title="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5v10a.5.5 0 0 1-.5.5h-6v-7h-5v7h-6a.5.5 0 0 1-.5-.5z"/></svg></button>
+      <button type="button" id="restartBtn" class="small-btn icon-btn" aria-label="Reset game" title="Reset game"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M20 12a8 8 0 1 1-2.3-5.7L20 9"/></svg></button>
+    </div>
   </div>
 
   <div class="table">
-    <div class="info">
-      <div class="info-box">Cards Left: <b id="remaining">25</b></div>
-      <div class="info-box">Selected: <b id="selectedCount">0</b></div>
-      <div class="info-box">Total: <b id="selectedTotal">0</b> / 20</div>
-    </div>
-
     <div id="board" aria-label="25 playing cards"></div>
+    <aside class="game-hud" aria-label="Game HUD">
+      <div class="hud-status"><div id="turnLabel" class="turn">Player 1's Turn</div><div id="timer" class="timer">30s</div></div>
+      <div class="hud-counts">
+        <div class="info-box">Cards Left <b id="remaining">25</b></div>
+        <div class="info-box">Selected <b id="selectedCount">0</b></div>
+        <div class="info-box">Total <b id="selectedTotal">0</b><span> / 20</span></div>
+      </div>
+      <div class="controls">
+        <div id="message" aria-live="polite">Tap a card to reveal it.</div>
+        <button type="button" id="takeBtn" disabled>TAKE SELECTED CARDS</button>
+      </div>
+      <div class="player-panel">
+        <div class="player-panel-title">PLAYERS</div>
+        <div id="pockets" class="pockets"></div>
+      </div>
 
-    <div class="controls">
-      <div id="message" aria-live="polite">Tap a card to reveal it.</div>
-      <button type="button" id="takeBtn" disabled>TAKE SELECTED CARDS</button>
-    </div>
-
-    <div id="pockets" class="pockets"></div>
+    </aside>
   </div>
 </section>
 
@@ -204,7 +499,21 @@ const RANKS=[
   {rank:'K',value:13}
 ];
 
-const state={players:2,current:0,cards:[],selected:[],pockets:[],timeLeft:30,timerId:null,pendingTurn:false};
+const CARTOON_THEMES=[
+  {name:'Cute Animals',faces:['🐻','🐼','🦊','🐸','🐱','🐶','🐰','🐵','🦁','🐯','🐨','🐷','🐧']},
+  {name:'Funny Monsters',faces:['👾','🤖','👹','👻','👽','🧌','🐲','🦄','😈','🤡','💀','🧟','🧙']},
+  {name:'Space Pals',faces:['👨‍🚀','🛸','🌙','⭐','🪐','🚀','👽','🌍','☄️','🌞','🌌','🛰️','🌟']},
+  {name:'Fantasy Friends',faces:['🧙','🧚','🦄','🐉','🧝','🧜','🧞','🧛','🦸','🦹','🧌','🧟','🧝‍♀️']},
+  {name:'Food Friends',faces:['🍕','🍩','🍓','🍉','🍔','🍟','🍦','🍪','🥑','🌮','🍿','🍒','🧁']}
+];
+const CARD_PALETTES=[
+  {name:'Sunshine',face:'#fff1a8',border:'#e7a928',ink:'#563b12',accent:'#f7c94b'},
+  {name:'Ocean',face:'#c9f2ff',border:'#2797b5',ink:'#123f58',accent:'#62d2e8'},
+  {name:'Berry',face:'#ffe0ee',border:'#c44f86',ink:'#642143',accent:'#f49ac2'},
+  {name:'Mint',face:'#d9f7d5',border:'#4a9a62',ink:'#20512e',accent:'#8fe0a0'},
+  {name:'Lavender',face:'#e9ddff',border:'#8761c2',ink:'#40266d',accent:'#bca0f3'}
+];
+const state={players:2,current:0,cards:[],selected:[],pockets:[],timeLeft:30,timerId:null,pendingTurn:false,theme:CARTOON_THEMES[0],palette:CARD_PALETTES[0]};
 
 const $=id=>document.getElementById(id);
 
@@ -292,10 +601,18 @@ $('dialogClose').addEventListener('click',()=>{
 });
 
 function startGame(){
+  // Each new game gets a fresh cartoon theme.
+  state.theme=CARTOON_THEMES[Math.floor(Math.random()*CARTOON_THEMES.length)];
+  state.palette=CARD_PALETTES[Math.floor(Math.random()*CARD_PALETTES.length)];
+  document.documentElement.style.setProperty('--card-face',state.palette.face);
+  document.documentElement.style.setProperty('--card-border',state.palette.border);
+  document.documentElement.style.setProperty('--card-ink',state.palette.ink);
+  document.documentElement.style.setProperty('--card-accent',state.palette.accent);
   // Build 25 random cards from the requested rank set.
   state.cards=shuffle(Array.from({length:25},(_,i)=>{
     const r=RANKS[Math.floor(Math.random()*RANKS.length)];
-    return {id:i,rank:r.rank,value:r.value,taken:false};
+    const face=state.theme.faces[Math.floor(Math.random()*state.theme.faces.length)];
+    return {id:i,rank:r.rank,value:r.value,face,taken:false};
   }));
   stopTimer();
   state.current=0;
@@ -348,11 +665,13 @@ function renderBoard(){
     const el=document.createElement('button');
     el.type='button';
     el.className='card'+(state.selected.includes(card.id)?' selected':'');
-    el.setAttribute('aria-label',`Card ${card.rank}, value ${card.value}`);
+    el.setAttribute('aria-label',`${state.theme.name} cartoon, card ${card.rank}, value ${card.value}`);
     el.innerHTML=`
       <div class="card-inner">
-        <div class="face back"></div>
+        <div class="face back"><span class="back-mascot" aria-hidden="true">${state.theme.faces[0]}</span></div>
         <div class="face front">
+          <div class="theme-label">${state.theme.name}</div>
+          <div class="cartoon" aria-hidden="true">${card.face}</div>
           <div class="rank">${card.rank}</div>
           <div class="value">${card.value} POINT${card.value===1?'':'S'}</div>
         </div>
